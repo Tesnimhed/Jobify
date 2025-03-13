@@ -1,3 +1,5 @@
+import Job from '../models/jobModel.js'
+
 import { nanoid } from "nanoid";
 
 
