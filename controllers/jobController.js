@@ -1,5 +1,5 @@
 import Job from '../models/jobModel.js'
-
+import { StatusCodes } from 'http-status-codes';
 import { nanoid } from "nanoid";
 
 
@@ -9,61 +9,41 @@ let jobs= [
     ];
 
 
-export const getJobs = (req,res)=>{
-    res.status(200).json({jobs})
+export const getJobs = async (req,res)=>{
+    const jobs = await Job.find({})
+    res.status(StatusCodes.OK).json({jobs})
 }
 
-export const createJob = (req,res)=>{
+export const createJob = async (req,res)=>{
     const {company, position}= req.body; 
-
-    if(!company || !position){
-        res.status(400).json({ message : 'Veuillez nous envoyer l entreprise et la position'});
-        return;
-    }
-
-    const id = nanoid(10); 
-    const newJob= {id,company,position}; 
-
-    jobs.push(newJob); 
-
-    res.status(201).json({jobs}); 
+    const newJob = await Job.create({company, position});
+    res.status(StatusCodes.CREATED).json({newJob}); 
 }
 
-
-export const getJob = (req,res)=>{
+export const getJob = async(req,res)=>{
     const {id}=req.params;
-    const job=jobs.find((i)=>i.id==id)
+    const job = await Job.findById(id);
 
     if(!job){ return res.status(404).json({message: 'Job not Found'}); }
 
-    res.status(201).json(job);
+    res.status(StatusCodes.OK).json({job});
 
 }
 
 
-export const deleteJob = (req,res)=>{
+export const deleteJob = async (req,res)=>{
     const {id} = req.params; 
-    const job=jobs.find((i)=>i.id==id)
+    const job=await Job.findByIdAndDelete(id);
     if(!job){ return res.status(404).json({message: 'Job not Found'}); }
-
-    const newjob= jobs.filter((i)=>i.id != id); 
-    jobs=newjob; 
-    res.status(200).json({message: 'Job deleted'}); 
+    res.status(StatusCodes.OK).json({message: 'Job deleted'}); 
 }
 
 
-export const updateJob = (req,res)=>{
+export const updateJob = async (req,res)=>{
     const {id} = req.params; 
     const {company,position} = req.body; 
-    const job=jobs.find((i)=>i.id==id)
+    const job=await Job.findByIdAndUpdate(id,{company,position},{new:true});
     if(!job){ return res.status(404).json({message: 'Job not Found'}); }
-
-    if(!company || !position){
-        res.status(400).json({message:" veuillez envoyer companie et position"});
-    }
-
-    job.company = company; 
-    job.position = position; 
-    res.status(201).json(job); 
+    res.status(StatusCodes.OK).json({job}); 
 }
 
