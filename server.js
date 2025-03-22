@@ -7,7 +7,8 @@ import morgan from 'morgan';
 import jobRoutes from './routes/jobRoutes.js';
 import mongoose from 'mongoose';
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-import { validateTest } from './middleware/validationMiddleware.js';
+
+
 
 
 
@@ -22,14 +23,6 @@ app.get('/', (req,res) => {
 });
 
 app.use('/api/v1/jobs', jobRoutes);
-
-app.post('/api/v1/test',validateTest,
-(req, res) => {
-  const { name } = req.body;
-  res.json({ msg: `hello ${name}` });
-});
-
-
 
 // Gestion des routes inexistantes
 app.use('*', (req,res)=> { res.status(404).json({message : 'route inexistante'}); })
