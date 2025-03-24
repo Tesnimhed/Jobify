@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import jobRoutes from './routes/jobRoutes.js';
 import mongoose from 'mongoose';
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
+import authRouter from './routes/authRouter.js';
 
 
 
@@ -23,6 +24,7 @@ app.get('/', (req,res) => {
 });
 
 app.use('/api/v1/jobs', jobRoutes);
+app.use('/api/v1/auth', authRouter);
 
 // Gestion des routes inexistantes
 app.use('*', (req,res)=> { res.status(404).json({message : 'route inexistante'}); })
